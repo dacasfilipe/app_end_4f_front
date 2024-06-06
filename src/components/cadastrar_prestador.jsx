@@ -9,7 +9,7 @@ const Cadastrar_prestador = () => {
 
   const salvar = async (campos) => {
     try {
-      const response = await api.post("usuarios", campos);
+      const response = await api.post("/prestador", campos);
       setAviso("Prestador cadastrado com sucesso!");
       reset();
     } catch (error) {
@@ -27,41 +27,41 @@ const Cadastrar_prestador = () => {
           <form onSubmit={handleSubmit(salvar)}>
             <div className="row">
               <div className="col">
-                <label htmlFor="username">Nome:</label>
+                <label htmlFor="prestador_nome">Nome:</label>
                 <input
                   type="text"
                   className="form-control"
-                  id="username"
+                  id="prestador_nome"
                   required
                   autoFocus
-                  {...register("username")}
+                  {...register("prestador_nome")}
                 />
               </div>
               <div className="col">
-                <label htmlFor="cnpj">CNPJ:</label>
+                <label htmlFor="prestador_cnpj">CNPJ:</label>
                 <input
                   type="text"
                   className="form-control"
-                  id="cnpj"
+                  id="prestador_cnpj"
                   required
                   autoFocus
-                  {...register("cnpj")}
+                  {...register("prestador_cnpj")}
                 />
               </div>
               <div className="col">
-                <label htmlFor="cpf">CPF:</label>
+                <label htmlFor="prestador_cpf">CPF:</label>
                 <input
                   type="text"
                   className="form-control"
-                  id="cpf"
+                  id="prestador_cpf"
                   required
                   autoFocus
-                  {...register("cpf")}
+                  {...register("prestador_cpf")}
                 />
               </div>
             </div>
             <div className="row">
-              <div className="col">
+              {/* <div className="col">
                 <label htmlFor="telefone">Telefone:</label>
                 <input
                   type="text"
@@ -71,40 +71,40 @@ const Cadastrar_prestador = () => {
                   autoFocus
                   {...register("telefone")}
                 />
-              </div>
+              </div> */}
               <div className="col">
-                <label htmlFor="email">Email:</label>
+                <label htmlFor="prestador_email">Email:</label>
                 <input
                   type="email"
                   className="form-control"
-                  id="email"
+                  id="prestador_email"
                   required
-                  {...register("email")}
+                  {...register("prestador_email")}
                 />
               </div>
               <div className="col">
-                <label htmlFor="razao_social">Razão Social:</label>
+                <label htmlFor="prestador_razaoSocial">Razão Social:</label>
                 <input
                   type="text"
                   className="form-control"
-                  id="razao_social"
+                  id="prestador_razaoSocial"
                   required
-                  {...register("razao_social")}
+                  {...register("prestador_razaoSocial")}
                 />
               </div>
             </div>
             <div className="row">
               <div className="col">
-                <label htmlFor="status">Senha:</label>
+                <label htmlFor="prestador_senha">Senha:</label>
                 <input
                   type="password"
                   className="form-control"
-                  id="senha"
+                  id="prestador_senha"
                   required
-                  {...register("senha")}
+                  {...register("prestador_senha")}
                 />
               </div>
-              <div className="col">
+              {/* <div className="col">
                 <label htmlFor="rua">Rua:</label>
                 <input
                   type="text"
@@ -184,7 +184,7 @@ const Cadastrar_prestador = () => {
                   autoFocus
                   {...register("complemento")}
                 />
-              </div>
+              </div> */}
             </div>
             <input
               type="submit"

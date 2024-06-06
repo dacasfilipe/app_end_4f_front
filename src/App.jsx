@@ -20,7 +20,7 @@ const RoutesWithAuth = () => {
             {/* {autenticado && <MenuSuperior/>} */}
             <Routes>
                 <Route path="/login" element={<FormularioLogin />} />
-                <Route path="/" element={autenticado ? <Navigate to="/prestadores" /> : <FormularioLogin />} />
+                <Route path="/" element={autenticado ? <Navigate to="/tarefas" /> : <FormularioLogin />} />
                 <Route path="/prestadores" element={<><MenuSuperior /><Cadastrar_prestador /></>} />
                 <Route path="/user" element={<><MenuSuperior /><Cadastrar_Usuarios /></>} />
                 <Route path="/agendamento" element={<><MenuSuperior /><Agendamento /></>} />
