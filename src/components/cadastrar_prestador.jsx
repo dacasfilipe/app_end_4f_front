@@ -43,7 +43,7 @@ const Cadastrar_prestador = () => {
                   type="text"
                   className="form-control"
                   id="prestador_cnpj"
-                  required
+                  
                   autoFocus
                   {...register("prestador_cnpj")}
                 />
@@ -88,7 +88,7 @@ const Cadastrar_prestador = () => {
                   type="text"
                   className="form-control"
                   id="prestador_razaoSocial"
-                  required
+                  
                   {...register("prestador_razaoSocial")}
                 />
               </div>

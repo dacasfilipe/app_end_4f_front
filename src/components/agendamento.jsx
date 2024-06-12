@@ -1,16 +1,30 @@
 import { useForm } from "react-hook-form";
 import { api } from "../config_axios";
-import { useState } from "react";
-import DatePicker from "react-datepicker"; // Importando o DatePicker
-import "react-datepicker/dist/react-datepicker.css"; // Importando os estilos padrão do DatePicker
-import TimePicker from 'react-time-picker';
+import { useState, useEffect } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { Helmet } from "react-helmet";
 
 const Agendamento = () => {
     const { register, handleSubmit, reset } = useForm();
     const [aviso, setAviso] = useState("");
-    const [selectedDate, setSelectedDate] = useState(null); // Estado para controlar a data selecionada
-    const [selectedTime, setSelectedTime] = useState("00:00"); // Estado para controlar a hora selecionada
+    const [selectedDate, setSelectedDate] = useState(null);
+    const [selectedTime, setSelectedTime] = useState("00:00");
+    const [servicos, setServicos] = useState([]);
+
+    useEffect(() => {
+        const fetchServicos = async () => {
+            try {
+                const response = await api.get("/servicos");
+                setServicos(response.data);
+                console.log(response.data);
+            } catch (error) {
+                console.error("Erro ao buscar serviços", error);
+            }
+        };
+
+        fetchServicos();
+    }, []);
 
     const salvar = async (campos) => {
         try {
@@ -27,7 +41,7 @@ const Agendamento = () => {
             <Helmet>
                 <title>Agendamento</title>
             </Helmet>
-            <div className="container p-5 bg-light text-dark rounded" style={{ borderColor: "#4e9c9c", borderWidth: "20px", borderStyle: "solid" }}> 
+            <div className="container p-5 bg-light text-dark rounded" style={{ borderColor: "#4e9c9c", borderWidth: "20px", borderStyle: "solid" }}>
                 <div className="container p-5 bg-light text-dark rounded">
                     <h4 className="fst-italic mb-3">Agendamento</h4>
                     <form onSubmit={handleSubmit(salvar)}>
@@ -36,15 +50,15 @@ const Agendamento = () => {
                                 className="form-control" type="search" placeholder="Serviços" aria-label="Serviços" />
                             <button className="btn btn-outline-success" type="submit"> Pesquisar </button>
                         </div>
-                        <select className="form-select" aria-label="Default select example">
-                            <option selected>Serviços</option>
-                            <option value="1">Elétrica</option>
-                            <option value="2">Jardinagem</option>
-                            <option value="3">Pintura</option>
+                        <select className="form-select" aria-label="Default select example" {...register("servico_id")} defaultValue="">
+                            <option value="" disabled>Selecione um serviço</option>
+                            {servicos.map(servico => (
+                                <option key={servico.servico_id} value={servico.servico_id}>{servico.servico_nome}</option>
+                            ))}
                         </select>
                         <br />
-                        <select className="form-select" aria-label="Default select example">
-                            <option selected>Prestadores</option>
+                        <select className="form-select" aria-label="Default select example" defaultValue="">
+                            <option value="" disabled>Prestadores</option>
                             <option value="1">João</option>
                             <option value="2">Maria</option>
                             <option value="3">Pedro</option>
@@ -61,7 +75,7 @@ const Agendamento = () => {
                             />
                         </div>
                         <br />
-                        <h6>selecione um horário:</h6>
+                        <h6>Selecione um horário:</h6>
                         <div className="input-group mb-3">
                             <input
                                 type="time"
