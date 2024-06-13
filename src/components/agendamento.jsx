@@ -11,6 +11,8 @@ const Agendamento = () => {
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedTime, setSelectedTime] = useState("00:00");
     const [servicos, setServicos] = useState([]);
+    const [prestadores, setPrestadores] = useState([]); // State for filtered prestadores
+
 
     useEffect(() => {
         const fetchServicos = async () => {
