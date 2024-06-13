@@ -26,6 +26,22 @@ const Agendamento = () => {
         fetchServicos();
     }, []);
 
+    const fetchPrestadoresByServico = async (servicoId) => {
+        if (!servicoId) return; // Handle empty service ID
+
+        try {
+            const response = await api.get(`/prestadores?servico_id=${servicoId}`); // Dynamic URL with query param
+            setPrestadores(response.data);
+            console.log(response.data);
+        } catch (error) {
+            console.error("Erro ao buscar prestadores", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchPrestadoresByServico(selectedServicoId); // Fetch prestadores on service change
+    }, [selectedServicoId]); // Dependency array for service ID
+
     const salvar = async (campos) => {
         try {
             const response = await api.post("agendamento", campos);
@@ -57,11 +73,14 @@ const Agendamento = () => {
                             ))}
                         </select>
                         <br />
-                        <select className="form-select" aria-label="Default select example" defaultValue="">
-                            <option value="" disabled>Prestadores</option>
-                            <option value="1">João</option>
-                            <option value="2">Maria</option>
-                            <option value="3">Pedro</option>
+                        <select className="form-select" aria-label="Prestadores" {...register("prestador_id")} defaultValue="">
+                            <option value="" disabled>Selecione um prestador</option>
+                            {prestadores.map((prestador) => (
+                                <option key={prestador.prestador_id} value={prestador.prestador_id}>{prestador.prestador_nome}</option>
+                            ))}     
+
+                                
+                            {errors.prestador_id && <span className="text-danger">Selecione um prestador</span>}
                         </select>
                         <br />
                         <div>
