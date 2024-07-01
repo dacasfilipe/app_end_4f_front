@@ -57,13 +57,21 @@ const Agendamento = () => {
 
     const salvar = async (campos) => {
         try {
-            const response = await api.post("agendamento", campos);
+            // Adiciona os campos agendamento_hora e agendamento_servico_id ao objeto campos
+            const camposCompletos = {
+                ...campos,
+                agendamento_hora: selectedTime,
+                servicos:{servico_id: watch("servico_id")}
+            };
+
+            const response = await api.post("agendamento", camposCompletos);
             setAviso("Agendamento realizado com sucesso!");
             reset();
         } catch (error) {
             setAviso("Erro ao realizar agendamento!");
         }
     };
+
     useEffect(() => {
         console.log("Servicos:", servicos);
     }, [servicos]);
