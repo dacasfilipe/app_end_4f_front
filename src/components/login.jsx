@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { useAuth } from './AuthProvider';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { api } from "../config_axios";
 import { Helmet } from "react-helmet";
 
 const FormularioLogin = () => {
-    const [username, setUsername] = useState("");
-    const [senha, setSenha] = useState("");
+    const [email, setEmail] = useState("");
+    const [cliente_senha, setClienteSenha] = useState("");
     const [lembrar, setLembrar] = useState(false); // Estado para lembrar-se de mim
     const [error, setError] = useState("");
     const { login } = useAuth();
@@ -14,15 +13,25 @@ const FormularioLogin = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (username.trim() === "" || senha.trim() === "") {
+        if (email.trim() === "" || cliente_senha.trim() === "") {
             setError("Preencha todos os campos!");
             return;
         }
 
         try {
-            const response = await api.post("/login", { username, senha });
+            const response = await fetch('http://localhost:8080/login', {
+                method: 'POST',
+                credentials: 'include', // isso permite que cookies sejam enviados
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, cliente_senha })
+            });
+
             if (response.status === 200) {
-                login();
+                const data = await response.json();
+                console.log(data); // Você pode processar os dados de login aqui
+                login(); // Supondo que 'login' é uma função que manipula o estado de autenticação
             } else {
                 setError("Usuário ou senha inválidos!");
             }
@@ -43,11 +52,11 @@ const FormularioLogin = () => {
                             <h2 className="mb-4">Faça o Login</h2>
                             <form onSubmit={handleSubmit}>
                                 <div className="form-outline mb-4">
-                                    <input type="text" id="username" className="form-control form-control-lg" value={username} onChange={(e) => setUsername(e.target.value)} />
+                                    <input type="text" id="username" className="form-control form-control-lg" value={email} onChange={(e) => setEmail(e.target.value)} />
                                     <label className="form-label" htmlFor="username">NOME DE USUÁRIO</label>
                                 </div>
                                 <div className="form-outline mb-4">
-                                    <input type="password" id="senha" className="form-control form-control-lg" value={senha} onChange={(e) => setSenha(e.target.value)} />
+                                    <input type="password" id="senha" className="form-control form-control-lg" value={cliente_senha} onChange={(e) => setClienteSenha(e.target.value)} />
                                     <label className="form-label" htmlFor="senha">SENHA</label>
                                 </div>
                                 <div className="form-check mb-3">

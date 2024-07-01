@@ -9,11 +9,28 @@ const Cadastrar_Usuario = () => {
 
   const salvar = async (campos) => {
     try {
-      const response = await api.post("/usuarios", campos);
-      setAviso(`Usuário cadastrado com sucesso!"`);
+      // Cadastrar o cliente primeiro
+      const responseCliente = await api.post("cliente", {
+        cliente_nome: campos.cliente_nome,
+        cliente_cpf: campos.cliente_cpf,
+        email: campos.email,
+        cliente_dataNascimento: campos.cliente_dataNascimento,
+        cliente_senha: campos.cliente_senha,
+      });
+
+      const clienteId = responseCliente.data.cliente_id; // Supondo que a resposta do servidor inclui o ID do cliente
+      console.log(clienteId);
+      // Cadastrar o telefone do cliente
+      await api.post("telefone", {
+        cliente:{
+          cliente_id: clienteId},
+        telefone_numero: campos.telefone_numero,
+      });
+
+      setAviso("Usuário e telefone cadastrados com sucesso!");
       reset();
     } catch (error) {
-      setAviso("Erro ao cadastrar usuário!");
+      setAviso("Erro ao cadastrar usuário e telefone!");
     }
   };
 
@@ -66,7 +83,7 @@ const Cadastrar_Usuario = () => {
                 className="form-control"
                 id="cliente_email"
                 required
-                {...register("cliente_email")}
+                {...register("email")}
               />
             </div>
             <div className="form-group mt-2">

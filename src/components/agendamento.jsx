@@ -6,20 +6,19 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Helmet } from "react-helmet";
 
 const Agendamento = () => {
-    const { register, handleSubmit, reset } = useForm();
+    const { register, handleSubmit, reset, watch } = useForm();
     const [aviso, setAviso] = useState("");
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedTime, setSelectedTime] = useState("00:00");
     const [servicos, setServicos] = useState([]);
-    const [prestadores, setPrestadores] = useState([]); // State for filtered prestadores
-
+    const [prestadores, setPrestadores] = useState([]);
+    const [selectedServicoNome, setSelectedServicoNome] = useState("");
 
     useEffect(() => {
         const fetchServicos = async () => {
             try {
                 const response = await api.get("/servicos");
                 setServicos(response.data);
-                console.log(response.data);
             } catch (error) {
                 console.error("Erro ao buscar serviços", error);
             }
@@ -28,21 +27,33 @@ const Agendamento = () => {
         fetchServicos();
     }, []);
 
-    const fetchPrestadoresByServico = async (servicoId) => {
-        if (!servicoId) return; // Handle empty service ID
+    const buscarPrestadoresPorNomeServico = async (servicoNome) => {
+        if (!servicoNome) return;
 
         try {
-            const response = await api.get(`/prestadores?servico_id=${servicoId}`); // Dynamic URL with query param
+            const response = await api.get(`/prestador/search?servicoNome=${servicoNome}`);
             setPrestadores(response.data);
             console.log(response.data);
+            
         } catch (error) {
-            console.error("Erro ao buscar prestadores", error);
+            console.error("Erro ao buscar prestadores por nome do serviço", error);
         }
     };
 
-    useEffect(() => {
-        fetchPrestadoresByServico(selectedServicoId); // Fetch prestadores on service change
-    }, [selectedServicoId]); // Dependency array for service ID
+    const handleServicoChange = (event) => {
+        console.log("Event target value:", event.target.value);
+        console.log("Servicos array:", servicos); // Log do array servicos
+    
+        const servicoEncontrado = servicos.find(servico => servico.servico_id === parseInt(event.target.value, 10));        console.log("Servico encontrado:", servicoEncontrado); // Log do serviço encontrado
+    
+        const servicoNome = servicoEncontrado?.servico_nome;
+        console.log("Servico Nome:", servicoNome);
+    
+        setSelectedServicoNome(servicoNome);
+        console.log("Selected Servico Nome:", selectedServicoNome); // Log do estado selectedServicoNome
+    
+        buscarPrestadoresPorNomeServico(servicoNome);
+    };
 
     const salvar = async (campos) => {
         try {
@@ -53,6 +64,9 @@ const Agendamento = () => {
             setAviso("Erro ao realizar agendamento!");
         }
     };
+    useEffect(() => {
+        console.log("Servicos:", servicos);
+    }, [servicos]);
 
     return (
         <>
@@ -65,24 +79,38 @@ const Agendamento = () => {
                     <form onSubmit={handleSubmit(salvar)}>
                         <div className="input-group mb-3">
                             <input
-                                className="form-control" type="search" placeholder="Serviços" aria-label="Serviços" />
-                            <button className="btn btn-outline-success" type="submit"> Pesquisar </button>
+                                className="form-control"
+                                type="search"
+                                placeholder="Serviços"
+                                aria-label="Serviços"
+                                {...register("servicoNome")}
+                            />
+                            <button
+                                className="btn btn-outline-success"
+                                type="button"
+                                onClick={() => buscarPrestadoresPorNomeServico(watch("servicoNome"))}
+                            >
+                                Pesquisar
+                            </button>
                         </div>
-                        <select className="form-select" aria-label="Default select example" {...register("servico_id")} defaultValue="">
+                        <select
+                            className="form-select"
+                            aria-label="Default select example"
+                            {...register("servico_id")}
+                            defaultValue=""
+                            onChange={handleServicoChange}
+                        >
                             <option value="" disabled>Selecione um serviço</option>
                             {servicos.map(servico => (
                                 <option key={servico.servico_id} value={servico.servico_id}>{servico.servico_nome}</option>
                             ))}
                         </select>
                         <br />
-                        <select className="form-select" aria-label="Prestadores" {...register("prestador_id")} defaultValue="">
+                        <select className="form-select" aria-label="Prestadores" {...register("prestador_id")} defaultValue="" disabled={!selectedServicoNome}>
                             <option value="" disabled>Selecione um prestador</option>
                             {prestadores.map((prestador) => (
                                 <option key={prestador.prestador_id} value={prestador.prestador_id}>{prestador.prestador_nome}</option>
-                            ))}     
-
-                                
-                            {errors.prestador_id && <span className="text-danger">Selecione um prestador</span>}
+                            ))}
                         </select>
                         <br />
                         <div>

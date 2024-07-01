@@ -9,11 +9,31 @@ const Cadastrar_prestador = () => {
 
   const salvar = async (campos) => {
     try {
-      const response = await api.post("/prestador", campos);
-      setAviso("Prestador cadastrado com sucesso!");
+      // Cadastrar o cliente primeiro
+      const responsePrestador = await api.post("prestador", {
+        prestador_nome: campos.prestador_nome,
+        prestador_cnpj: campos.prestador_cnpj,
+        prestador_cpf: campos.prestador_cpf,
+        prestador_razaoSocial: campos.prestador_razaoSocial,
+        prestador_email: campos.prestador_email,
+        prestador_senha: campos.prestador_senha,
+        
+      });
+
+      const prestadorId = responsePrestador.data.prestador_id; // Supondo que a resposta do servidor inclui o ID do cliente
+      console.log(prestadorId);
+      // Cadastrar o telefone do cliente
+      await api.post("telefone", {
+        prestador:{
+          prestador_id: prestadorId
+        },
+          telefone_numero: campos.telefone_numero,
+      });
+
+      setAviso("Usuário e telefone cadastrados com sucesso!");
       reset();
     } catch (error) {
-      setAviso("Erro ao cadastrar prestador!");
+      setAviso("Erro ao cadastrar usuário e telefone!");
     }
   };
 
@@ -61,7 +81,7 @@ const Cadastrar_prestador = () => {
               </div>
             </div>
             <div className="row">
-              {/* <div className="col">
+              <div className="col">
                 <label htmlFor="telefone">Telefone:</label>
                 <input
                   type="text"
@@ -69,9 +89,9 @@ const Cadastrar_prestador = () => {
                   id="telefone"
                   required
                   autoFocus
-                  {...register("telefone")}
+                  {...register("telefone_numero")}
                 />
-              </div> */}
+              </div>
               <div className="col">
                 <label htmlFor="prestador_email">Email:</label>
                 <input
