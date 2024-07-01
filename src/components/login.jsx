@@ -12,25 +12,24 @@ const FormularioLogin = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
         if (email.trim() === "" || cliente_senha.trim() === "") {
             setError("Preencha todos os campos!");
             return;
         }
-
+    
         try {
-            const response = await fetch('http://localhost:8080/login', {
+            const response = await fetch('http://localhost:8080/auth/login', {
                 method: 'POST',
-                credentials: 'include', // isso permite que cookies sejam enviados
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ email, cliente_senha })
             });
-
+    
             if (response.status === 200) {
                 const data = await response.json();
-                console.log(data); // Você pode processar os dados de login aqui
+                localStorage.setItem('token', data.token);
                 login(); // Supondo que 'login' é uma função que manipula o estado de autenticação
             } else {
                 setError("Usuário ou senha inválidos!");
