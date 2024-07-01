@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from './AuthProvider';
+import useAuth from '../components/useAuth'; // Ajuste o caminho conforme necessário
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Helmet } from "react-helmet";
 

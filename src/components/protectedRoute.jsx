@@ -1,17 +1,9 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
+import useAuth from './useAuth'; // Ajuste o caminho conforme necessário
 
 const ProtectedRoute = ({ children }) => {
-    const navigate = useNavigate();
-    const token = localStorage.getItem('token');
-
-    useEffect(() => {
-        if (!token) {
-            navigate('/login');
-        }
-    }, [token, navigate]);
-
-    return children;
+    const { autenticado } = useAuth();
+    return autenticado ? children : <Navigate to="/login" />;
 };
 
 export default ProtectedRoute;
