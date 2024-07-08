@@ -1,14 +1,15 @@
 import { useState } from "react";
-import useAuth from '../components/useAuth'; // Ajuste o caminho conforme necessário
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Helmet } from "react-helmet";
+import useAuth from './useAuth'; // Ajuste o caminho conforme necessário
+import { useNavigate } from 'react-router-dom';
 
 const FormularioLogin = () => {
     const [email, setEmail] = useState("");
     const [cliente_senha, setClienteSenha] = useState("");
-    const [lembrar, setLembrar] = useState(false); // Estado para lembrar-se de mim
     const [error, setError] = useState("");
     const { login } = useAuth();
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -30,7 +31,8 @@ const FormularioLogin = () => {
             if (response.status === 200) {
                 const data = await response.json();
                 localStorage.setItem('token', data.token);
-                login(); // Supondo que 'login' é uma função que manipula o estado de autenticação
+                login(); // Chama o método login do AuthProvider
+                navigate('/agendamento'); // Redireciona para a página de agendamentos
             } else {
                 setError("Usuário ou senha inválidos!");
             }
@@ -58,10 +60,6 @@ const FormularioLogin = () => {
                                     <input type="password" id="senha" className="form-control form-control-lg" value={cliente_senha} onChange={(e) => setClienteSenha(e.target.value)} />
                                     <label className="form-label" htmlFor="senha">SENHA</label>
                                 </div>
-                                <div className="form-check mb-3">
-                                    <input type="checkbox" className="form-check-input" id="lembrar" checked={lembrar} onChange={(e) => setLembrar(e.target.checked)} />
-                                    <label className="form-check-label" htmlFor="lembrar">Lembre-se de mim</label>
-                                </div>
                                 {error && <div className="alert alert-danger">{error}</div>}
                                 <div className="d-grid gap-2 col-12 mx-auto">
                                     <button type="submit" className="btn btn-primary btn-lg btn-block">Entrar</button>
@@ -74,7 +72,6 @@ const FormularioLogin = () => {
                 </div>
                 <footer className="text-center mt-4">Todos os direitos reservados.</footer>
             </section>
-            
         </>
     );
 };

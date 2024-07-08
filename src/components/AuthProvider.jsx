@@ -1,12 +1,12 @@
 import { useState, createContext, useContext } from 'react';
 
-const AuthContext = createContext(null);
+// Criação do contexto
+export const AuthContext = createContext(null);
 
 export const useAuth = () => useContext(AuthContext);
 
-// eslint-disable-next-line react/prop-types
 export const AuthProvider = ({ children }) => {
-    const [autenticado, setAutenticado] = useState(true);
+    const [autenticado, setAutenticado] = useState(false);
 
     const login = () => {
         setAutenticado(true);
